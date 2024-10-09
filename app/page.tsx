@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import ColorThief from "color-thief-browser";
-import wrapText from "./utils/wrapText";
+import { wrapText, capitalizeWords } from "./utils/textFormatting";
 import { loadInterFont } from "./utils/loadInterFont"; // Adjust the import path accordingly
 
 export default function Home() {
@@ -21,11 +21,8 @@ export default function Home() {
   const [input3, setInput3] = useState("");
   const [input4, setInput4] = useState("");
 
-  // State for logos
-  const [logos, setLogos] = useState<string[]>([
-    // Replace with your logo paths or URLs
-    "/logos/logo2.png",
-  ]);
+  // State for logo
+  const [logo, setLogo] = useState<string>("/logos/logo2.png");
 
   const colorThief = new ColorThief();
 
@@ -108,6 +105,7 @@ export default function Home() {
   };
 
   async function drawPoster(palette: number[][], isExport: boolean = false) {
+    // Your original drawPoster function remains unchanged
     let canvas: HTMLCanvasElement;
     let context: CanvasRenderingContext2D | null;
 
@@ -158,18 +156,17 @@ export default function Home() {
     context.textAlign = "right";
     context.textBaseline = "middle";
     context.fillText(year, titleLineEndX, titleYForYear);
-    // context.fillText(title, canvas.width * 0.05, titleYForYear);
 
     // === 2. Draw Title Text ===
 
     const titleY = titleLineY + canvas.height * 0.05; // 2% below the line
     context.fillStyle = "#000000"; // Black text
-    context.font = `800 condensed ${
+    context.font = `900 condensed ${
       canvas.height * 0.05
     }px 'Inter', sans-serif`; // 6% of canvas height
     context.textAlign = "left";
     context.textBaseline = "top";
-    context.fillText(title, canvas.width * 0.025, titleY);
+    context.fillText(capitalizeWords(title), canvas.width * 0.025, titleY);
 
     // === 3. Draw Uploaded Image ===
 
@@ -263,7 +260,7 @@ export default function Home() {
     const paletteX = canvas.width * 0.025; // 5% from left
 
     const paletteBoxHeight = paletteHeight * 0.2; // Increased to 20% of palette area height
-    const paletteSpacing = canvas.width * 0; // 2% of canvas width
+    const paletteSpacing = canvas.width * 0; // 0% of canvas width
 
     // Calculate total width occupied by palette boxes and spacing
     const paletteBoxWidth =
@@ -282,43 +279,39 @@ export default function Home() {
         paletteBoxHeight
       );
 
-      // Removed borders from palette colors as per your request
-
       currentX += paletteBoxWidth + paletteSpacing;
     });
 
     // === 5. Draw Input Texts Directly Under Palette ===
 
     const textYStart = paletteYPos + paletteHeight + canvas.height * -0.025; // 0.5% below palette
-    const textXPos = canvas.width * 0.025; // 25% from left
+    const textXPos = canvas.width * 0.025; // 2.5% from left
     let textY = textYStart;
 
     // Shot by Input
     context.fillStyle = "#333333"; // Dark gray text
     context.font = `600 condensed ${
       canvas.height * 0.0225
-    }px 'Inter', sans-serif`; // 3.5% of canvas height
+    }px 'Inter', sans-serif`; // 2.25% of canvas height
     context.textAlign = "left";
     context.textBaseline = "top";
-    // context.fontStretch = "condensed"
-    context.fillText(`Shot by ${input2}`, textXPos, textY);
+    context.fillText(`Shot by ${capitalizeWords(input2)}`, textXPos, textY);
     textY += canvas.height * 0.04; // 4% of canvas height
 
     // Location Input
     context.fillStyle = "#555555"; // Medium gray text
-    context.font = `${canvas.height * 0.0125}px 'Inter', sans-serif`; // 3.5% of canvas height
-    textY += canvas.height * -0.015; // 4% of canvas height
-    context.fillText(input3, textXPos, textY);
+    context.font = `${canvas.height * 0.0125}px 'Inter', sans-serif`; // 1.25% of canvas height
+    textY += canvas.height * -0.015; // -1.5% of canvas height
+    context.fillText(capitalizeWords(input3), textXPos, textY);
 
     // A quote that matches
     context.fillStyle = "#777777"; // Light gray text
-    context.font = `condensed ${canvas.height * 0.0125}px 'Inter', sans-serif`; // 3.5% of canvas height
+    context.font = `condensed ${canvas.height * 0.0125}px 'Inter', sans-serif`; // 1.25% of canvas height
     textY += canvas.height * 0.04; // 4% of canvas height
-    context.fillText(input4, textXPos, textY);
 
     // Define maximum width and line height
     const maxTextWidth = canvas.width * 0.9; // 90% of canvas width
-    const lineHeight = canvas.height * 0.015; // 4% of canvas height
+    const lineHeight = canvas.height * 0.015; // 1.5% of canvas height
 
     // Use wrapText to handle multi-line text and get updated y-coordinate
     textY = wrapText(
@@ -330,55 +323,37 @@ export default function Home() {
       lineHeight
     );
 
-    // // Update y-coordinate based on the number of lines drawn
-    // // Estimate the number of lines by splitting the text
-    // const estimatedLines = Math.ceil(
-    //   input4.length / (maxTextWidth / (canvas.height * 0.035))
-    // );
-    // textY += lineHeight * estimatedLines;
+    // === 6. Draw Logo at the Bottom ===
 
-    // === 6. Draw Three Logos at the Bottom ===
+    const logosY = canvas.height * 0.98; // 95% from top (5% from bottom)
+    const logoHeight = canvas.height * 0.02; // 7% of canvas height
+    const logoWidth = canvas.width * 0.2; // Adjust width as needed
 
-    const logosY = canvas.height * 0.95; // 95% from top (5% from bottom)
-    const logoHeight = canvas.height * 0.07; // 7% of canvas height
-    const logoSpacing = canvas.width * 0.05; // 5% of canvas width
+    // Calculate centered X-coordinate for the logo
+    const logoX = (canvas.width - logoWidth) / 2;
+    const logoY = logosY - logoHeight; // Position logo above the 95% line
 
-    const totalLogosWidth =
-      logos.length * (canvas.width * 0.1) + (logos.length - 1) * logoSpacing;
-    const logosStartX = (canvas.width - totalLogosWidth) / 2; // Center the logos
-
-    logos.forEach((logoSrc, index) => {
-      const logoX = logosStartX + index * (canvas.width * 0.1 + logoSpacing);
-      const logoY = logosY - logoHeight; // Position logos above the 95% line
-
-      // Draw the logo image
+    // Create a promise to ensure the logo is drawn before proceeding
+    await new Promise<void>((resolve) => {
       const logoImage = new Image();
-      logoImage.src = logoSrc;
-      logoImage.crossOrigin = "Anonymous"; // Handle CORS if logos are from external sources
+      logoImage.src = logo;
+      logoImage.crossOrigin = "anonymous"; // Handle CORS if logo is from external sources
 
       logoImage.onload = () => {
-        context.drawImage(
-          logoImage,
-          logoX,
-          logoY,
-          canvas.width * 0.1,
-          logoHeight
-        );
+        context.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
+        resolve();
       };
 
-      // Optional: Draw placeholder if logo is not loaded
       logoImage.onerror = () => {
+        // Optional: Draw placeholder if logo is not loaded
         context.fillStyle = "#CCCCCC"; // Light gray placeholder
-        context.fillRect(logoX, logoY, canvas.width * 0.1, logoHeight);
+        context.fillRect(logoX, logoY, logoWidth, logoHeight);
         context.fillStyle = "#666666"; // Darker gray text
         context.font = `${canvas.height * 0.02}px Arial`; // 2% of canvas height
         context.textAlign = "center";
         context.textBaseline = "middle";
-        context.fillText(
-          "Logo",
-          logoX + canvas.width * 0.05,
-          logoY + logoHeight / 2
-        );
+        context.fillText("Logo", logoX + logoWidth / 2, logoY + logoHeight / 2);
+        resolve();
       };
     });
 
@@ -403,7 +378,7 @@ export default function Home() {
     };
     generatePoster();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, year, input2, input3, input4, previewSrc, logos]);
+  }, [title, year, input2, input3, input4, previewSrc, logo]);
 
   const handleDownload = () => {
     drawPoster(palette, true);
@@ -411,11 +386,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mt-4 text-center">POSTER BORED</h1>
-      <div className="flex flex-col md:flex-row md:items-center justify-center space-y-8 md:space-y-0 md:space-x-12 mt-6">
-        {/* === 1. Input Fields on the Left === */}
+      {/* === Header === */}
+      <header className="text-center py-4 bg-white shadow-md">
+        <h1 className="text-4xl font-bold">CineCanvas</h1>
+      </header>
+
+      {/* === Main Content Area === */}
+      <div className="flex flex-col md:flex-row md:items-start justify-center space-y-8 md:space-y-0 md:space-x-12 mt-6 p-4">
+        {/* === Inputs Section (Left Column) === */}
         <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
-          {/* <h2 className="text-2xl font-semibold mb-4">Input Fields</h2> */}
           {/* Title and Year Inputs */}
           <div className="mb-6">
             <label className="block text-left font-semibold mb-1">Title:</label>
@@ -424,7 +403,7 @@ export default function Home() {
               minLength={1}
               maxLength={16}
               value={title}
-              onChange={(e) => setTitle(e.target.value.toUpperCase())}
+              onChange={(e) => setTitle(e.target.value)}
               className="border border-gray-300 p-2 mb-3 w-full rounded"
               placeholder="Enter title"
             />
@@ -460,7 +439,7 @@ export default function Home() {
               placeholder="Enter Location"
             />
             <label className="block text-left font-semibold mb-1">
-              Input 4:
+              A Quote:
             </label>
             <textarea
               value={input4}
@@ -471,7 +450,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* === 2. Poster Preview on the Right === */}
+        {/* === Poster Preview on the Right === */}
         <div className="w-full md:w-2/3">
           <div className="flex flex-col items-center">
             {/* Hidden file input */}

@@ -8,14 +8,19 @@
  * @param maxWidth - The maximum width of a line before wrapping.
  * @param lineHeight - The height between lines.
  */
-const wrapText = (
+
+export function capitalizeWords(str: string): string {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export function wrapText(
   context: CanvasRenderingContext2D,
   text: string,
   x: number,
   y: number,
   maxWidth: number,
   lineHeight: number
-): number => {
+): number {
   const words = text.split(" ");
   let line = "";
   let currentY = y;
@@ -41,6 +46,4 @@ const wrapText = (
   }
 
   return currentY;
-};
-
-export default wrapText;
+}
