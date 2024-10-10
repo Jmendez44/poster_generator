@@ -28,7 +28,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
   handleDownload,
 }) => {
   return (
-    <div className="w-full md:w-2/3">
+    <div className="">
       <div className="flex flex-col items-center">
         {/* Hidden file input */}
         <input
@@ -40,9 +40,9 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
         />
         {/* Poster preview area */}
         <div
-          className={`relative w-[400px] h-[600px] bg-white border ${
+          className={`relative w-[400px] h-[600px] border ${
             isDragging ? "border-blue-500" : "border-gray-300"
-          } overflow-hidden rounded-lg shadow-lg`}
+          } overflow-hidden shadow-md`}
           onDragOver={handleDragOver}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
@@ -76,15 +76,6 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
             </div>
           )}
         </div>
-        {/* Download Button */}
-        {downloadReady && (
-          <button
-            onClick={handleDownload}
-            className="mt-6 px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md transition duration-300"
-          >
-            Download Poster
-          </button>
-        )}
       </div>
     </div>
   );

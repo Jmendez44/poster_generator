@@ -113,12 +113,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* === Header === */}
-      <header className="text-center py-4 bg-white shadow-md">
+      <header className="text-center py-4">
         <h1 className="text-4xl font-bold">CineCanvas</h1>
       </header>
 
       {/* === Main Content Area === */}
-      <div className="flex flex-col md:flex-row md:items-start justify-center space-y-8 md:space-y-0 md:space-x-12 mt-6 p-4">
+      <div className="flex flex-col md:flex-row h-full w-fit bg-white justify-center m-auto space-y-8 md:space-y-0 mt-6 p-4 shadow-lg">
         {/* === Inputs Section (Left Column) === */}
         <InputFields
           title={title}
@@ -131,6 +131,9 @@ export default function Home() {
           setInput3={setInput3}
           input4={input4}
           setInput4={setInput4}
+          downloadReady={downloadReady}
+          handleDownload={handleDownload}
+          palette={[]}
         />
 
         {/* === Poster Preview on the Right === */}
@@ -147,6 +150,7 @@ export default function Home() {
           downloadReady={downloadReady}
           handleDownload={handleDownload}
         />
+
         {/* Hidden elements */}
         <img
           ref={uploadedImageRef}
