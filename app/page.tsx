@@ -113,12 +113,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* === Header === */}
-      <header className="text-center py-4">
-        <h1 className="text-4xl font-bold">CineCanvas</h1>
+      <header className="flex justify-center pt-4">
+        {/* <h1 className="text-4xl font-bold">CineCanvas</h1> */}
+        <img className="w-20" src="/logos/CINECNVSthick.png" alt="" />
       </header>
 
       {/* === Main Content Area === */}
-      <div className="flex flex-col md:flex-row h-full w-fit bg-white justify-center m-auto space-y-8 md:space-y-0 mt-6 p-4 shadow-lg">
+      <div className="flex flex-col md:flex-row h-full w-fit bg-white justify-center m-auto space-y-8 md:space-y-0 mt-4 p-4  border-black border-8 shadow-lg">
         {/* === Inputs Section (Left Column) === */}
         <InputFields
           title={title}
