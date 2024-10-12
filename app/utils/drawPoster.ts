@@ -60,7 +60,7 @@ async function drawPoster(params: DrawPosterParams) {
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw the background
-  context.fillStyle = "#FFFFFF"; // White background
+  context.fillStyle = "#F6F1E5"; // White background
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   // === 1. Draw Title Line and Year ===

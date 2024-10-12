@@ -17,7 +17,7 @@ export default function Home() {
 
   // State for logos
   const [logos, setLogos] = useState<string[]>([
-    "/logos/logo1.png",
+    "/logos/CINECNVSthick.png",
     "/logos/logo2.png",
     "/logos/logo3.png",
   ]);
@@ -26,6 +26,7 @@ export default function Home() {
     palette,
     previewSrc,
     isDragging,
+    isLoading,
     uploadedImageRef,
     fileInputRef,
     handleFileInputChange,
@@ -86,32 +87,42 @@ export default function Home() {
   }, [title, year, input2, input3, input4, logos, palette, imageUploaded]);
 
   const handleDownload = () => {
-    if (imageUploaded) {
-      drawPoster({
-        palette,
-        isExport: true,
-        canvasRef,
-        uploadedImageRef,
-        previewSrc,
-        setPreviewSrc,
-        setDownloadReady,
-        inputs: {
-          title,
-          year,
-          input2,
-          input3,
-          input4,
-          logos,
-        },
-        imageUploaded, // Pass this to drawPoster
-      });
-    } else {
-      alert("Please upload an image before downloading the poster.");
+    if (
+      !imageUploaded ||
+      title.trim() === "" ||
+      year.trim() === "" ||
+      input2.trim() === "" ||
+      input3.trim() === "" ||
+      input4.trim() === ""
+    ) {
+      alert(
+        "Please complete all fields and upload an image before proceeding."
+      );
+      return;
     }
+
+    drawPoster({
+      palette,
+      isExport: true,
+      canvasRef,
+      uploadedImageRef,
+      previewSrc,
+      setPreviewSrc,
+      setDownloadReady,
+      inputs: {
+        title,
+        year,
+        input2,
+        input3,
+        input4,
+        logos,
+      },
+      imageUploaded, // Pass this to drawPoster
+    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center min-h-screen bg-gray-100">
       {/* === Header === */}
       <header className="flex justify-center pt-4">
         {/* <h1 className="text-4xl font-bold">CineCanvas</h1> */}
@@ -119,7 +130,7 @@ export default function Home() {
       </header>
 
       {/* === Main Content Area === */}
-      <div className="flex flex-col md:flex-row h-full w-fit bg-white justify-center m-auto space-y-8 md:space-y-0 mt-4 p-4  border-black border-8 shadow-lg">
+      <div className="flex flex-col md:flex-row h-full w-fit md:bg-white justify-center space-y-8 md:space-y-0 mt-4 md:p-4  border-black md:border-8 md:shadow-lg">
         {/* === Inputs Section (Left Column) === */}
         <InputFields
           title={title}
@@ -132,15 +143,16 @@ export default function Home() {
           setInput3={setInput3}
           input4={input4}
           setInput4={setInput4}
-          downloadReady={downloadReady}
           handleDownload={handleDownload}
-          palette={[]}
+          imageUploaded={imageUploaded}
+          palette={palette}
         />
 
         {/* === Poster Preview on the Right === */}
         <PosterPreview
           previewSrc={previewSrc}
           isDragging={isDragging}
+          isLoading={isLoading}
           handleDragOver={handleDragOver}
           handleDragEnter={handleDragEnter}
           handleDragLeave={handleDragLeave}

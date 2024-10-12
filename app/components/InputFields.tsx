@@ -1,9 +1,8 @@
-// components/InputFields.tsx
-
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 interface InputFieldsProps {
   palette: number[][];
+  imageUploaded: boolean;
   title: string;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   year: string;
@@ -14,7 +13,6 @@ interface InputFieldsProps {
   setInput3: React.Dispatch<React.SetStateAction<string>>;
   input4: string;
   setInput4: React.Dispatch<React.SetStateAction<string>>;
-  downloadReady: boolean;
   handleDownload: () => void;
 }
 
@@ -29,9 +27,9 @@ const InputFields: React.FC<InputFieldsProps> = ({
   setInput3,
   input4,
   setInput4,
-  downloadReady,
   handleDownload,
   palette,
+  imageUploaded,
 }) => {
   const currentYear = new Date().getFullYear();
   const years = useMemo(() => {
@@ -41,6 +39,20 @@ const InputFields: React.FC<InputFieldsProps> = ({
     }
     return yearList;
   }, [currentYear]);
+
+  const isFormValid =
+    imageUploaded &&
+    title.trim() !== "" &&
+    year.trim() !== "" &&
+    input2.trim() !== "" &&
+    input3.trim() !== "" &&
+    input4.trim() !== "";
+
+  const buttonColor =
+    isFormValid && palette.length > 0
+      ? `rgb(${palette[3][0]}, ${palette[3][1]}, ${palette[3][2]})`
+      : "#cccccc"; // Gray color when disabled
+
   return (
     <div className="w-full md:w-full h-full p-6">
       {/* Title and Year Inputs */}
@@ -63,9 +75,11 @@ const InputFields: React.FC<InputFieldsProps> = ({
           onChange={(e) => setYear(e.target.value)}
           className="border border-gray-300 p-2 mb-3 w-[300px]"
         >
-          {/* <option defaultValue={"2024"} disabled></option> */}
+          <option value="" disabled>
+            Select Year
+          </option>
           {years.map((yr) => (
-            <option defaultValue={"2024"} key={yr} value={yr}>
+            <option key={yr} value={yr}>
               {yr}
             </option>
           ))}
@@ -98,38 +112,35 @@ const InputFields: React.FC<InputFieldsProps> = ({
           className="border border-gray-300 p-2 w-full"
           placeholder="Enter a Quote (or whatever you want really 🙂)"
         ></textarea>
-        {/* Download Button */}
-        {downloadReady ? (
-          <div className="flex items-end h-20 w-auto justify-around">
-            <button
-              onClick={handleDownload}
-              className="mt-6 px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 shadow-md transition duration-300"
-            >
-              Download
-            </button>
-            <button
-              onClick={handleDownload}
-              className="mt-6 px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 shadow-md transition duration-300"
-            >
-              Add to Cart
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-end h-20 justify-around">
-            <button
-              onClick={handleDownload}
-              className=" mt-6 px-6 py-2 text-black bg-gray-200 border-2 border-black"
-            >
-              Download
-            </button>
-            <button
-              onClick={handleDownload}
-              className=" mt-6 px-6 py-2 text-black bg-gray-200 border-2 border-black"
-            >
-              Add to Cart
-            </button>
-          </div>
-        )}
+        {/* Buttons */}
+        <div className="flex items-end h-20 w-auto justify-around">
+          <button
+            onClick={handleDownload}
+            disabled={!isFormValid}
+            className={`mt-6 px-6 py-2 text-white shadow-md transition duration-300 ${
+              isFormValid ? "" : "cursor-not-allowed"
+            }`}
+            style={{
+              backgroundColor: buttonColor,
+              opacity: isFormValid ? 1 : 0.6,
+            }}
+          >
+            Download
+          </button>
+          <button
+            onClick={handleDownload}
+            disabled={!isFormValid}
+            className={`mt-6 px-6 py-2 text-white shadow-md transition duration-300 ${
+              isFormValid ? "" : "cursor-not-allowed"
+            }`}
+            style={{
+              backgroundColor: buttonColor,
+              opacity: isFormValid ? 1 : 0.6,
+            }}
+          >
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
   );

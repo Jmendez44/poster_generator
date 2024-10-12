@@ -7,6 +7,7 @@ export interface UseImageUploadReturn {
   palette: number[][];
   previewSrc: string;
   isDragging: boolean;
+  isLoading: boolean;
   uploadedImageRef: React.RefObject<HTMLImageElement>;
   fileInputRef: React.RefObject<HTMLInputElement>;
   handleFileInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,6 +25,7 @@ export default function useImageUpload(): UseImageUploadReturn {
   const [palette, setPalette] = useState<number[][]>([]);
   const [previewSrc, setPreviewSrc] = useState<string>("");
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const uploadedImageRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,6 +35,7 @@ export default function useImageUpload(): UseImageUploadReturn {
 
   const handleImageUpload = (file: File) => {
     if (file && file.type.startsWith("image/")) {
+      setIsLoading(true);
       const reader = new FileReader();
 
       reader.onload = function (e) {
@@ -53,7 +56,15 @@ export default function useImageUpload(): UseImageUploadReturn {
 
               // Set imageUploaded to true
               setImageUploaded(true);
+
+              setIsLoading(false);
             }
+          };
+          uploadedImageRef.current.onerror = function () {
+            alert(
+              "Failed to load the image. Please try again with a different file."
+            );
+            setIsLoading(false); // End loading on error
           };
         }
       };
@@ -105,6 +116,7 @@ export default function useImageUpload(): UseImageUploadReturn {
     palette,
     previewSrc,
     isDragging,
+    isLoading,
     uploadedImageRef,
     fileInputRef,
     handleFileInputChange,
