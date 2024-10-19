@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, lazy, Suspense } from "react";
 import useImageUpload from "./hooks/useImageUpload";
 import InputFields from "./components/InputFields";
-import PosterPreview from "./components/PosterPreview";
 import drawPoster from "./utils/drawPoster";
 import { loadInterFont } from "./utils/loadInterFont";
+
+// Lazy load the PosterPreview component
+const PosterPreview = lazy(() => import("./components/PosterPreview"));
 
 export default function Home() {
   // State variables for input fields
@@ -140,6 +142,8 @@ export default function Home() {
     }
   };
 
+  const memoizedPalette = useMemo(() => palette, [palette]);
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
       {/* === Header === */}
@@ -162,27 +166,29 @@ export default function Home() {
           input4={input4}
           setInput4={setInput4}
           handleDownload={handleDownload}
-          palette={palette}
+          palette={memoizedPalette}
           imageUploaded={imageUploaded}
           generateRandomQuote={generateRandomQuote}
           isGeneratingQuote={isGeneratingQuote}
         />
 
-        {/* === Poster Preview on the Right === */}
-        <PosterPreview
-          previewSrc={previewSrc}
-          isDragging={isDragging}
-          isLoading={isLoading} // Pass the updated isLoading
-          handleDragOver={handleDragOver}
-          handleDragEnter={handleDragEnter}
-          handleDragLeave={handleDragLeave}
-          handleDrop={handleDrop}
-          handleClickUpload={handleClickUpload}
-          fileInputRef={fileInputRef}
-          handleFileInputChange={handleFileInputChange}
-          downloadReady={downloadReady}
-          handleDownload={handleDownload}
-        />
+        {/* Wrap PosterPreview in Suspense */}
+        <Suspense fallback={<div>Loading poster preview...</div>}>
+          <PosterPreview
+            previewSrc={previewSrc}
+            isDragging={isDragging}
+            isLoading={isLoading}
+            handleDragOver={handleDragOver}
+            handleDragEnter={handleDragEnter}
+            handleDragLeave={handleDragLeave}
+            handleDrop={handleDrop}
+            handleClickUpload={handleClickUpload}
+            fileInputRef={fileInputRef}
+            handleFileInputChange={handleFileInputChange}
+            downloadReady={downloadReady}
+            handleDownload={handleDownload}
+          />
+        </Suspense>
 
         {/* Hidden elements */}
         <img

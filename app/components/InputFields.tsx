@@ -18,7 +18,9 @@ interface InputFieldsProps {
   isGeneratingQuote: boolean;
 }
 
-const InputFields: React.FC<InputFieldsProps> = ({
+const InputFields: React.FC<InputFieldsProps> = React.memo(({
+  palette,
+  imageUploaded,
   title,
   setTitle,
   year,
@@ -30,8 +32,6 @@ const InputFields: React.FC<InputFieldsProps> = ({
   input4,
   setInput4,
   handleDownload,
-  palette,
-  imageUploaded,
   generateRandomQuote,
   isGeneratingQuote,
 }) => {
@@ -156,6 +156,6 @@ const InputFields: React.FC<InputFieldsProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default InputFields;
