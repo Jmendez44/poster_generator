@@ -1,22 +1,27 @@
 "use client";
 
+import React from 'react';
 import { useState, useRef, useEffect, useMemo, lazy, Suspense } from "react";
 import useImageUpload from "./hooks/useImageUpload";
 import InputFields from "./components/InputFields";
 import drawPoster from "./utils/drawPoster";
 import { loadInterFont } from "./utils/loadInterFont";
+import { createGradientFromPalette } from "./utils/colorUtils";
 
 // Lazy load the PosterPreview component
 const PosterPreview = lazy(() => import("./components/PosterPreview"));
 
 export default function Home() {
-  // State variables for input fields
-  const [title, setTitle] = useState("");
-  const [year, setYear] = useState("");
-  const [input2, setInput2] = useState("");
-  const [input3, setInput3] = useState("");
-  const [input4, setInput4] = useState("");
+  // State variables for input fields with default values
+  const [title, setTitle] = useState("My Awesome Shot");
+  const [year, setYear] = useState(new Date().getFullYear().toString());
+  const [input2, setInput2] = useState("John Doe");
+  const [input3, setInput3] = useState("New York, NY");
+  const [input4, setInput4] = useState("lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
   const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
+  const [backgroundGradient, setBackgroundGradient] = useState<string>(
+    'linear-gradient(135deg, rgba(245, 247, 250, 0.5) 0%, rgba(195, 207, 226, 0.5) 100%)'
+  );
 
   // State for logos
   const [logos, setLogos] = useState<string[]>([
@@ -45,7 +50,16 @@ export default function Home() {
   } = useImageUpload(setIsLoading); // Pass setIsLoading to the hook
 
   const [downloadReady, setDownloadReady] = useState<boolean>(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 400;  // Set to your desired width
+      canvas.height = 600; // Set to your desired height
+      canvasRef.current = canvas;
+    }
+  }, []);
 
   useEffect(() => {
     // Load the Inter font when the component mounts
@@ -82,9 +96,11 @@ export default function Home() {
         });
 
         setIsLoading(false); // End loading after poster is drawn
+        setBackgroundGradient(createGradientFromPalette(palette, 0.5)); // 0.5 opacity
       } else {
         setPreviewSrc("");
         setDownloadReady(false);
+        setBackgroundGradient('linear-gradient(135deg, rgba(245, 247, 250, 0.5) 0%, rgba(195, 207, 226, 0.5) 100%)');
       }
     };
     generatePoster();
@@ -145,14 +161,16 @@ export default function Home() {
   const memoizedPalette = useMemo(() => palette, [palette]);
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen relative" style={{ background: backgroundGradient }}>
       {/* === Header === */}
-      <header className="flex justify-center pt-4">
-        <img className="w-20" src="/logos/CINECNVSthick.png" alt="" />
+      <header className="fixed logo-container blend-exclusion top-0 left-0 right-0 flex justify-center pt-4 bg-transparent z--10">
+
+          <img className="w-14" src="/logos/CINECNVSthick.png" alt="Logo" />
+
       </header>
 
       {/* === Main Content Area === */}
-      <div className="flex flex-col md:flex-row h-full w-fit md:bg-white justify-center space-y-8 md:space-y-0 mt-4 md:p-4  border-black md:border-8 md:shadow-lg">
+      <div className="flex flex-col flex-col-reverse md:flex-row h-full w-fit md:bg-white justify-center space-y-8 md:space-y-0 md:mt-0 mt-16 md:p-4 border-black md:border-4 md:shadow-xl">
         {/* === Inputs Section (Left Column) === */}
         <InputFields
           title={title}

@@ -278,3 +278,49 @@
   font-display: swap;
   src: url("./fonts/InterDisplay-BlackItalic.woff2") format("woff2");
 }
+
+/* Add these classes at the end of the file */
+
+.logo-container {
+  position: absolute;
+}
+
+.blend-normal img {
+  mix-blend-mode: normal;
+}
+
+.blend-multiply img {
+  mix-blend-mode: multiply;
+}
+
+.blend-screen img {
+  mix-blend-mode: screen;
+}
+
+.blend-overlay img {
+  mix-blend-mode: overlay;
+}
+
+.blend-darken img {
+  mix-blend-mode: darken;
+}
+
+.blend-lighten img {
+  mix-blend-mode: lighten;
+}
+
+.blend-color-dodge img {
+  mix-blend-mode: color-dodge;
+}
+
+.blend-color-burn img {
+  mix-blend-mode: color-burn;
+}
+
+.blend-difference img {
+  mix-blend-mode: difference;
+}
+
+.blend-exclusion img {
+  mix-blend-mode: exclusion;
+}

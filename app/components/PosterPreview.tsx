@@ -31,7 +31,7 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
 }) => {
   return (
     <div className="w-full md:w-2/3">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center pb-4 md:pb-0">
         {/* Hidden file input */}
         <input
           type="file"
@@ -42,9 +42,9 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
         />
         {/* Poster preview area */}
         <div
-          className={`relative w-[400px] h-[600px] bg-white border ${
+          className={`relative w-[400px] h-[600px] md:w-[400px] md:h-[600px] bg-white border ${
             isDragging ? "border-blue-500" : "border-gray-300"
-          } overflow-hidden rounded-lg shadow-lg`}
+          } overflow-hidden shadow-lg mx-auto`}
           onDragOver={handleDragOver}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
