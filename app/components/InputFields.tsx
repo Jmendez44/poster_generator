@@ -14,6 +14,8 @@ interface InputFieldsProps {
   input4: string;
   setInput4: React.Dispatch<React.SetStateAction<string>>;
   handleDownload: () => void;
+  generateRandomQuote: () => void;
+  isGeneratingQuote: boolean;
 }
 
 const InputFields: React.FC<InputFieldsProps> = ({
@@ -30,6 +32,8 @@ const InputFields: React.FC<InputFieldsProps> = ({
   handleDownload,
   palette,
   imageUploaded,
+  generateRandomQuote,
+  isGeneratingQuote,
 }) => {
   const currentYear = new Date().getFullYear();
   const years = useMemo(() => {
@@ -103,15 +107,23 @@ const InputFields: React.FC<InputFieldsProps> = ({
           className="border border-gray-300 p-2 mb-3 w-[300px]"
           placeholder="Enter Location"
         />
-        <label className="block text-center font-semibold mb-1">A Quote</label>
-        <textarea
-          minLength={100}
-          maxLength={385}
-          value={input4}
-          onChange={(e) => setInput4(e.target.value)}
-          className="border border-gray-300 p-2 w-full"
-          placeholder="Enter a Quote (or whatever you want really 🙂)"
-        ></textarea>
+        <div className="mb-6 relative">
+          <label className="block text-center font-semibold mb-1">Quote</label>
+          <input
+            type="text"
+            value={input4}
+            onChange={(e) => setInput4(e.target.value)}
+            className="border border-gray-300 p-2 w-[300px] pr-24"
+            placeholder="Enter a quote or generate one"
+          />
+          <button
+            onClick={generateRandomQuote}
+            disabled={isGeneratingQuote}
+            className="absolute right-0 bottom-0 bg-blue-500 text-white px-2 py-1 text-sm rounded-bl rounded-tr hover:bg-blue-600 disabled:bg-blue-300"
+          >
+            {isGeneratingQuote ? "..." : "Generate"}
+          </button>
+        </div>
         {/* Buttons */}
         <div className="flex items-end h-20 w-auto justify-around">
           <button

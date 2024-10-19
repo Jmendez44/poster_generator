@@ -14,6 +14,7 @@ export default function Home() {
   const [input2, setInput2] = useState("");
   const [input3, setInput3] = useState("");
   const [input4, setInput4] = useState("");
+  const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
 
   // State for logos
   const [logos, setLogos] = useState<string[]>([
@@ -22,11 +23,12 @@ export default function Home() {
     "/logos/logo3.png",
   ]);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Moved isLoading here
+
   const {
     palette,
     previewSrc,
     isDragging,
-    isLoading,
     uploadedImageRef,
     fileInputRef,
     handleFileInputChange,
@@ -38,7 +40,7 @@ export default function Home() {
     setPalette,
     setPreviewSrc,
     imageUploaded,
-  } = useImageUpload();
+  } = useImageUpload(setIsLoading); // Pass setIsLoading to the hook
 
   const [downloadReady, setDownloadReady] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -58,7 +60,6 @@ export default function Home() {
   useEffect(() => {
     const generatePoster = async () => {
       if (imageUploaded) {
-        // Only call drawPoster if an image is uploaded
         await drawPoster({
           palette,
           isExport: false,
@@ -75,10 +76,11 @@ export default function Home() {
             input4,
             logos,
           },
-          imageUploaded, // Pass this to drawPoster
+          imageUploaded,
         });
+
+        setIsLoading(false); // End loading after poster is drawn
       } else {
-        // If no image is uploaded, ensure previewSrc is empty
         setPreviewSrc("");
         setDownloadReady(false);
       }
@@ -117,15 +119,31 @@ export default function Home() {
         input4,
         logos,
       },
-      imageUploaded, // Pass this to drawPoster
+      imageUploaded,
     });
+  };
+
+  const generateRandomQuote = async () => {
+    setIsGeneratingQuote(true);
+    try {
+      const response = await fetch("/api/quote");
+      if (!response.ok) {
+        throw new Error("Failed to fetch quote");
+      }
+      const data = await response.json();
+      setInput4(`${data.content} - ${data.author}`);
+    } catch (error) {
+      console.error("Failed to fetch quote:", error);
+      setInput4("Failed to generate quote. Please try again.");
+    } finally {
+      setIsGeneratingQuote(false);
+    }
   };
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
       {/* === Header === */}
       <header className="flex justify-center pt-4">
-        {/* <h1 className="text-4xl font-bold">CineCanvas</h1> */}
         <img className="w-20" src="/logos/CINECNVSthick.png" alt="" />
       </header>
 
@@ -144,15 +162,17 @@ export default function Home() {
           input4={input4}
           setInput4={setInput4}
           handleDownload={handleDownload}
-          imageUploaded={imageUploaded}
           palette={palette}
+          imageUploaded={imageUploaded}
+          generateRandomQuote={generateRandomQuote}
+          isGeneratingQuote={isGeneratingQuote}
         />
 
         {/* === Poster Preview on the Right === */}
         <PosterPreview
           previewSrc={previewSrc}
           isDragging={isDragging}
-          isLoading={isLoading}
+          isLoading={isLoading} // Pass the updated isLoading
           handleDragOver={handleDragOver}
           handleDragEnter={handleDragEnter}
           handleDragLeave={handleDragLeave}

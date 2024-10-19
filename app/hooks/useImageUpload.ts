@@ -7,7 +7,6 @@ export interface UseImageUploadReturn {
   palette: number[][];
   previewSrc: string;
   isDragging: boolean;
-  isLoading: boolean;
   uploadedImageRef: React.RefObject<HTMLImageElement>;
   fileInputRef: React.RefObject<HTMLInputElement>;
   handleFileInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,11 +20,12 @@ export interface UseImageUploadReturn {
   imageUploaded: boolean;
 }
 
-export default function useImageUpload(): UseImageUploadReturn {
+export default function useImageUpload(
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+): UseImageUploadReturn {
   const [palette, setPalette] = useState<number[][]>([]);
   const [previewSrc, setPreviewSrc] = useState<string>("");
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const uploadedImageRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,32 +35,28 @@ export default function useImageUpload(): UseImageUploadReturn {
 
   const handleImageUpload = (file: File) => {
     if (file && file.type.startsWith("image/")) {
-      setIsLoading(true);
+      setIsLoading(true); // Start loading
       const reader = new FileReader();
 
-      reader.onload = function (e) {
+      reader.onload = (e) => {
         if (uploadedImageRef.current) {
           uploadedImageRef.current.src = e.target?.result as string;
 
-          uploadedImageRef.current.onload = function () {
+          uploadedImageRef.current.onload = () => {
             if (uploadedImageRef.current?.complete) {
               // Generate color palette
               const palette = colorThief.getPalette(
-                uploadedImageRef.current as HTMLImageElement,
+                uploadedImageRef.current,
                 5
               );
               setPalette(palette);
-
-              // Update previewSrc to trigger re-render
               setPreviewSrc(uploadedImageRef.current.src);
-
-              // Set imageUploaded to true
               setImageUploaded(true);
-
-              setIsLoading(false);
+              // isLoading will be set to false after drawPoster completes in page.tsx
             }
           };
-          uploadedImageRef.current.onerror = function () {
+
+          uploadedImageRef.current.onerror = () => {
             alert(
               "Failed to load the image. Please try again with a different file."
             );
@@ -116,7 +112,6 @@ export default function useImageUpload(): UseImageUploadReturn {
     palette,
     previewSrc,
     isDragging,
-    isLoading,
     uploadedImageRef,
     fileInputRef,
     handleFileInputChange,
