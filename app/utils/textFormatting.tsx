@@ -47,3 +47,31 @@ export function wrapText(
 
   return currentY;
 }
+
+function breakWord(context: CanvasRenderingContext2D, word: string, maxWidth: number): string[] {
+  const parts: string[] = [];
+  let currentPart = "";
+
+  for (let i = 0; i < word.length; i++) {
+    const char = word[i];
+    const testPart = currentPart + char;
+    const metrics = context.measureText(testPart);
+
+    if (metrics.width > maxWidth * 0.4 || currentPart.length >= 4) { // Break more aggressively
+      if (currentPart) {
+        parts.push(currentPart + "-");
+        currentPart = char;
+      } else {
+        parts.push(char);
+      }
+    } else {
+      currentPart += char;
+    }
+  }
+
+  if (currentPart) {
+    parts.push(currentPart);
+  }
+
+  return parts;
+}

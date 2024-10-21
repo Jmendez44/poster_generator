@@ -17,7 +17,7 @@ export default function Home() {
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [input2, setInput2] = useState("John Doe");
   const [input3, setInput3] = useState("New York, NY");
-  const [input4, setInput4] = useState("lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+  const [input4, setInput4] = useState("True joy in life comes not from material things, but from the people we hold dear. Loved ones are the anchors of our hearts, the safe harbor in every storm, and the constant reminder that we are never truly alone. Cherish them, for time is fleeting, and moments with them are life’s greatest treasures.");
   const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
   const [backgroundGradient, setBackgroundGradient] = useState<string>(
     'linear-gradient(135deg, rgba(245, 247, 250, 0.5) 0%, rgba(195, 207, 226, 0.5) 100%)'
@@ -163,14 +163,14 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen relative" style={{ background: backgroundGradient }}>
       {/* === Header === */}
-      <header className="fixed logo-container blend-exclusion top-0 left-0 right-0 flex justify-center pt-4 bg-transparent z--10">
+      <header className="fixed logo-container top-0 left-0 right-0 flex justify-center pt-4 bg-transparent z--10">
 
           <img className="w-14" src="/logos/CINECNVSthick.png" alt="Logo" />
 
       </header>
 
       {/* === Main Content Area === */}
-      <div className="flex flex-col flex-col-reverse md:flex-row h-full w-fit md:bg-white justify-center space-y-8 md:space-y-0 md:mt-0 mt-16 md:p-4 border-black md:border-4 md:shadow-xl">
+      <div className="flex flex-col flex-col-reverse md:flex-row h-full w-fit md:bg-white justify-center space-y-8 md:space-y-0 md:mt-0 mt-16 md:p-4 border-black md:border-0 md:rounded-sm md:shadow-xl">
         {/* === Inputs Section (Left Column) === */}
         <InputFields
           title={title}

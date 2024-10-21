@@ -224,59 +224,96 @@ async function drawPoster(params: DrawPosterParams) {
   context.fillStyle = "#555555"; // Medium gray text
   context.font = `${canvas.height * 0.0125}px 'Inter', sans-serif`; // 1.25% of canvas height
   textY += canvas.height * -0.015; // -1.5% of canvas height
-  context.fillText(capitalizeWords(input3), textXPos, textY);
+
+  // Split input3 into address and coordinates
+  const [address, coordinates] = input3.split('\n');
+
+  // Draw address
+  context.fillText(capitalizeWords(address), textXPos, textY);
+
+  // Draw coordinates on the next line
+  textY += canvas.height * 0.015; // Move to next line
+  context.font = `${canvas.height * 0.01}px 'Inter', sans-serif`; // Slightly smaller font for coordinates
+  context.fillText(coordinates || '', textXPos, textY);
+
+  // Adjust textY for the next element
+  textY += canvas.height * 0.04; // 4% of canvas height
 
   // A quote that matches
   context.fillStyle = "#777777"; // Light gray text
   context.font = `condensed ${canvas.height * 0.0125}px 'Inter', sans-serif`; // 1.25% of canvas height
-  textY += canvas.height * 0.04; // 4% of canvas height
 
   // Define maximum width and line height
   const maxTextWidth = canvas.width * 0.9; // 90% of canvas width
   const lineHeight = canvas.height * 0.015; // 1.5% of canvas height
 
+  // Reduce the space before the quote
+  textY -= canvas.height * 0.01; // Subtract 2% of canvas height
+
   // Use wrapText to handle multi-line text and get updated y-coordinate
   textY = wrapText(context, input4, textXPos, textY, maxTextWidth, lineHeight);
 
-  // === 6. Draw Logo at the Bottom ===
+  // === 6. Draw Logos at the Bottom ===
 
-  const logosY = canvas.height * 0.98; // 98% from top (5% from bottom)
-  const logoHeight = canvas.height * 0.02; // 7% of canvas height
-  const logoWidth = canvas.width * 0.2; // Adjust width as needed
-  const logoSpacing = canvas.width * 0.02;
+  const logosY = canvas.height * 0.98; // 98% from top (2% from bottom)
+  const logoSpacing = canvas.width * 0.01; // 2% of canvas width for spacing between logos
 
-  const totalLogosWidth =
-    logos.length * logoWidth + (logos.length - 1) * logoSpacing;
-  const logosStartX = (canvas.width - totalLogosWidth) / 2;
-
-  for (let i = 0; i < logos.length; i++) {
-    const logoSrc = logos[i];
-    const logoX = logosStartX + i * (logoWidth + logoSpacing);
-    const logoY = logosY - logoHeight;
-
-    await new Promise<void>((resolve) => {
+  const drawLogo = async (src: string, x: number, y: number, width: number, height: number) => {
+    return new Promise<void>((resolve) => {
       const logoImage = new Image();
-      logoImage.src = logoSrc;
+      logoImage.src = src;
       logoImage.crossOrigin = "anonymous";
 
       logoImage.onload = () => {
-        context.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
+        context!.drawImage(logoImage, x, y, width, height);
         resolve();
       };
 
       logoImage.onerror = () => {
         // Optional placeholder
-        context.fillStyle = "#CCCCCC";
-        context.fillRect(logoX, logoY, logoWidth, logoHeight);
-        context.fillStyle = "#666666";
-        context.font = `${canvas.height * 0.02}px Arial`;
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.fillText("Logo", logoX + logoWidth / 2, logoY + logoHeight / 2);
+        context!.fillStyle = "#CCCCCC";
+        context!.fillRect(x, y, width, height);
+        context!.fillStyle = "#666666";
+        context!.font = `${canvas.height * 0.02}px Arial`;
+        context!.textAlign = "center";
+        context!.textBaseline = "middle";
+        context!.fillText("Logo", x + width / 2, y + height / 2);
         resolve();
       };
     });
-  }
+  };
+
+  // Define individual logo dimensions
+  const logo1Width = canvas.width * 0.02;   // 4% of canvas width
+  const logo1Height = canvas.height * 0.010; // 2.5% of canvas height
+
+  const logo2Width = canvas.width * 0.08;   // 15% of canvas width
+  const logo2Height = canvas.height * 0.010; // 2.5% of canvas height
+
+  const logo3Width = canvas.width * 0.04;   // 4% of canvas width
+  const logo3Height = canvas.height * 0.010; // 2.5% of canvas height
+
+  // Calculate total width of all logos and spacing
+  const totalLogoWidth = logo1Width + logo2Width + logo3Width + 2 * logoSpacing;
+
+  // Calculate starting X position to center the logo group
+  const startX = (canvas.width - totalLogoWidth) / 2;
+
+  // Calculate individual logo positions
+  const logo1X = startX;
+  const logo2X = logo1X + logo1Width + logoSpacing;
+  const logo3X = logo2X + logo2Width + logoSpacing;
+
+  // Calculate Y positions to align the bottoms of the logos
+  const maxLogoHeight = Math.max(logo1Height, logo2Height, logo3Height);
+  const logo1Y = logosY - logo1Height;
+  const logo2Y = logosY - logo2Height;
+  const logo3Y = logosY - logo3Height;
+
+  // Draw the logos
+  await drawLogo('/logos/CINECNVS2.png', logo1X, logo1Y, logo1Width, logo1Height);
+  await drawLogo('/logos/logo2.png', logo2X, logo2Y, logo2Width, logo2Height);
+  await drawLogo('/logos/pngegg.png', logo3X, logo3Y, logo3Width, logo3Height);
 
   if (!isExport) {
     if (imageUploaded) {
