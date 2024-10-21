@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.0",
+    "@mailchimp/mailchimp_marketing": "^3.0.80",
     "@react-google-maps/api": "^2.20.3",
     "@types/lodash": "^4.17.12",
     "color-thief-browser": "^2.0.2",

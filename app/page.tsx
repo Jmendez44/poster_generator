@@ -7,6 +7,7 @@ import InputFields from "./components/InputFields";
 import drawPoster from "./utils/drawPoster";
 import { loadInterFont } from "./utils/loadInterFont";
 import { createGradientFromPalette } from "./utils/colorUtils";
+import DownloadPopup from "./components/DownloadPopup";
 
 // Lazy load the PosterPreview component
 const PosterPreview = lazy(() => import("./components/PosterPreview"));
@@ -18,6 +19,7 @@ export default function Home() {
   const [input2, setInput2] = useState("John Doe");
   const [input3, setInput3] = useState("New York, NY");
   const [input4, setInput4] = useState("Life is a beautiful journey filled with moments of joy, challenges, and growth. Each day presents an opportunity to learn, love, and make a positive impact on the world around us. Embrace the present, cherish your relationships, and pursue your passions with unwavering determination. Remember that every setback is a setup for a comeback, and every experience, good or bad, shapes who we are. Be kind to yourself and others, for we're all navigating this complex world together. In the end, it's not the years in your life that count, but the life in your years.");
+  const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
   const [backgroundGradient, setBackgroundGradient] = useState<string>(
     'linear-gradient(135deg, rgba(245, 247, 250, 0.5) 0%, rgba(195, 207, 226, 0.5) 100%)'
   );
@@ -50,6 +52,8 @@ export default function Home() {
 
   const [downloadReady, setDownloadReady] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const [isDownloadPopupOpen, setIsDownloadPopupOpen] = useState(false);
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -120,6 +124,10 @@ export default function Home() {
       return;
     }
 
+    setIsDownloadPopupOpen(true);
+  };
+
+  const handleDownloadLowRes = () => {
     drawPoster({
       palette,
       isExport: true,
@@ -137,7 +145,59 @@ export default function Home() {
         logos,
       },
       imageUploaded,
+      quality: 'low',
     });
+    setIsDownloadPopupOpen(false);
+  };
+
+  const handleSignUpAndDownload = async (email: string) => {
+    setIsLoading(true);
+    try {
+      console.log('Sending request to /api/subscribe');
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email_address: email }),
+      });
+
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to subscribe');
+      }
+
+      // Subscriber added successfully, now download high-res
+      drawPoster({
+        palette,
+        isExport: true,
+        canvasRef,
+        uploadedImageRef,
+        previewSrc,
+        setPreviewSrc,
+        setDownloadReady,
+        inputs: {
+          title,
+          year,
+          input2,
+          input3,
+          input4,
+          logos,
+        },
+        imageUploaded,
+        quality: 'high',
+      });
+      alert('Thank you for subscribing! Your high-res poster is being downloaded.');
+    } catch (error) {
+      console.error('Error in sign up process:', error);
+      alert(error instanceof Error ? error.message : 'There was an error processing your request. Please try again.');
+    } finally {
+      setIsLoading(false);
+      setIsDownloadPopupOpen(false);
+    }
   };
 
   const memoizedPalette = useMemo(() => palette, [palette]);
@@ -198,6 +258,14 @@ export default function Home() {
         />
         <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
       </div>
+      
+      <DownloadPopup
+        isOpen={isDownloadPopupOpen}
+        onClose={() => setIsDownloadPopupOpen(false)}
+        onDownloadLowRes={handleDownloadLowRes}
+        onSignUp={handleSignUpAndDownload}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

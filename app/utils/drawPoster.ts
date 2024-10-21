@@ -20,6 +20,27 @@ interface DrawPosterParams {
     logos: string[];
   };
   imageUploaded: boolean;
+  quality?: 'low' | 'high';
+}
+
+interface DrawPosterParams {
+  palette: number[][];
+  isExport: boolean;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
+  uploadedImageRef: React.RefObject<HTMLImageElement>;
+  previewSrc: string;
+  setPreviewSrc: React.Dispatch<React.SetStateAction<string>>;
+  setDownloadReady: React.Dispatch<React.SetStateAction<boolean>>;
+  inputs: {
+    title: string;
+    year: string;
+    input2: string;
+    input3: string;
+    input4: string;
+    logos: string[];
+  };
+  imageUploaded: boolean;
+  quality?: 'low' | 'high';
 }
 
 async function drawPoster(params: DrawPosterParams) {
@@ -33,6 +54,7 @@ async function drawPoster(params: DrawPosterParams) {
     setDownloadReady,
     inputs: { title, year, input2, input3, input4, logos },
     imageUploaded,
+    quality = 'high',
   } = params;
 
   let canvas: HTMLCanvasElement;
@@ -40,14 +62,14 @@ async function drawPoster(params: DrawPosterParams) {
 
   if (isExport) {
     canvas = document.createElement("canvas");
-    canvas.width = 6000;
-    canvas.height = 9000;
+    canvas.width = quality === 'high' ? 6000 : 1500;
+    canvas.height = quality === 'high' ? 9000 : 2250;
     context = canvas.getContext("2d");
   } else {
     canvas = canvasRef.current!;
     context = canvas.getContext("2d");
-    canvas.width = 800; // Adjusted width for manageable preview
-    canvas.height = 1200; // Adjusted height for manageable preview
+    canvas.width = 800;
+    canvas.height = 1200;
   }
 
   if (!context) return;
@@ -256,7 +278,7 @@ async function drawPoster(params: DrawPosterParams) {
   // === 6. Draw Logos at the Bottom ===
 
   const logosY = canvas.height * 0.98; // 98% from top (2% from bottom)
-  const logoSpacing = canvas.width * 0.01; // 2% of canvas width for spacing between logos
+  const logoSpacing = canvas.width * 0.02; // 2% of canvas width for spacing between logos
 
   const drawLogo = async (src: string, x: number, y: number, width: number, height: number) => {
     return new Promise<void>((resolve) => {

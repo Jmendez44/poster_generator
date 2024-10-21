@@ -187,8 +187,6 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
     setShowDropdown(false); // Close the dropdown after selection
   };
 
-  const defaultQuote = "Life is a beautiful journey filled with moments of joy, challenges, and growth. Each day presents an opportunity to learn, love, and make a positive impact on the world around us. Embrace the present, cherish your relationships, and pursue your passions with unwavering determination. Remember that every setback is a setup for a comeback, and every experience, good or bad, shapes who we are. Be kind to yourself and others, for we're all navigating this complex world together. In the end, it's not the years in your life that count, but the life in your years.";
-
   return (
     <div className="w-full h-full p-6 bg-white md:bg-transparent mb-4 md:mb-0 flex flex-col justify-between">
       <label className="block text-left text-sm font-semibold mb-1">Title</label>
@@ -199,7 +197,7 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
           maxLength={16}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="border border-gray-300 p-2 w-[220px] mr-2"
+          className="border border-gray-300 p-2 w-full mr-2"
           placeholder="Enter title"
         />
         <select
@@ -220,7 +218,7 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
         type="text"
         value={input2}
         onChange={(e) => setInput2(e.target.value)}
-        className="border border-gray-300 p-2 mb-3 w-[300px] "
+        className="border border-gray-300 p-2 mb-3 w-full "
         placeholder="Enter your name"
       />
       <label className="block text-left text-sm font-semibold mb-1">Location</label>
@@ -270,12 +268,11 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
           value={input4}
           onChange={(e) => setInput4(e.target.value)}
           placeholder="Enter a quote"
-          className="w-full p-2 border border-gray-300 rounded h-32 resize-none align-top overflow-auto"
+          className="w-full p-2 border border-gray-300 rounded h-32 resize-none align-top hyphens-auto leading-4"
           style={{
             verticalAlign: 'top',
             scrollbarWidth: 'thin',
             scrollbarColor: '#888 transparent',
-            overflowY: 'auto',
           }}
         />
         {/* Comment out or remove the generate quote button
@@ -320,7 +317,7 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
           >
             Add to Cart
           </button>
-          <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span className="absolute cursor-not-allowed left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             Coming Soon
           </span>
         </div>
