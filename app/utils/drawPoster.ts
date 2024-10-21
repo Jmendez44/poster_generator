@@ -240,7 +240,7 @@ async function drawPoster(params: DrawPosterParams) {
   textY += canvas.height * 0.04; // 4% of canvas height
 
   // A quote that matches
-  context.fillStyle = "#777777"; // Light gray text
+  context.fillStyle = "#333333"; // Dark gray text
   context.font = `condensed ${canvas.height * 0.0125}px 'Inter', sans-serif`; // 1.25% of canvas height
 
   // Define maximum width and line height

@@ -17,8 +17,7 @@ export default function Home() {
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [input2, setInput2] = useState("John Doe");
   const [input3, setInput3] = useState("New York, NY");
-  const [input4, setInput4] = useState("True joy in life comes not from material things, but from the people we hold dear. Loved ones are the anchors of our hearts, the safe harbor in every storm, and the constant reminder that we are never truly alone. Cherish them, for time is fleeting, and moments with them are life’s greatest treasures.");
-  const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
+  const [input4, setInput4] = useState("Life is a beautiful journey filled with moments of joy, challenges, and growth. Each day presents an opportunity to learn, love, and make a positive impact on the world around us. Embrace the present, cherish your relationships, and pursue your passions with unwavering determination. Remember that every setback is a setup for a comeback, and every experience, good or bad, shapes who we are. Be kind to yourself and others, for we're all navigating this complex world together. In the end, it's not the years in your life that count, but the life in your years.");
   const [backgroundGradient, setBackgroundGradient] = useState<string>(
     'linear-gradient(135deg, rgba(245, 247, 250, 0.5) 0%, rgba(195, 207, 226, 0.5) 100%)'
   );
@@ -104,7 +103,7 @@ export default function Home() {
       }
     };
     generatePoster();
-  }, [title, year, input2, input3, input4, logos, palette, imageUploaded]);
+  }, [title, year, input2, input3, input4, palette, imageUploaded]);
 
   const handleDownload = () => {
     if (
@@ -141,23 +140,6 @@ export default function Home() {
     });
   };
 
-  const generateRandomQuote = async () => {
-    setIsGeneratingQuote(true);
-    try {
-      const response = await fetch("/api/quote");
-      if (!response.ok) {
-        throw new Error("Failed to fetch quote");
-      }
-      const data = await response.json();
-      setInput4(`${data.content} - ${data.author}`);
-    } catch (error) {
-      console.error("Failed to fetch quote:", error);
-      setInput4("Failed to generate quote. Please try again.");
-    } finally {
-      setIsGeneratingQuote(false);
-    }
-  };
-
   const memoizedPalette = useMemo(() => palette, [palette]);
 
   return (
@@ -186,8 +168,8 @@ export default function Home() {
           handleDownload={handleDownload}
           palette={memoizedPalette}
           imageUploaded={imageUploaded}
-          generateRandomQuote={generateRandomQuote}
-          isGeneratingQuote={isGeneratingQuote}
+          // generateRandomQuote={generateRandomQuote}
+          // isGeneratingQuote={isGeneratingQuote}
         />
 
         {/* Wrap PosterPreview in Suspense */}

@@ -15,8 +15,8 @@ interface InputFieldsProps {
   input4: string;
   setInput4: React.Dispatch<React.SetStateAction<string>>;
   handleDownload: () => void;
-  generateRandomQuote: () => void;
-  isGeneratingQuote: boolean;
+  // generateRandomQuote: () => void;
+  // isGeneratingQuote: boolean;
 }
 
 interface Location {
@@ -44,8 +44,8 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
   input4,
   setInput4,
   handleDownload,
-  generateRandomQuote,
-  isGeneratingQuote,
+  // generateRandomQuote,
+  // isGeneratingQuote,
 }) => {
   const currentYear = new Date().getFullYear();
   const years = useMemo(() => {
@@ -187,6 +187,8 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
     setShowDropdown(false); // Close the dropdown after selection
   };
 
+  const defaultQuote = "Life is a beautiful journey filled with moments of joy, challenges, and growth. Each day presents an opportunity to learn, love, and make a positive impact on the world around us. Embrace the present, cherish your relationships, and pursue your passions with unwavering determination. Remember that every setback is a setup for a comeback, and every experience, good or bad, shapes who we are. Be kind to yourself and others, for we're all navigating this complex world together. In the end, it's not the years in your life that count, but the life in your years.";
+
   return (
     <div className="w-full h-full p-6 bg-white md:bg-transparent mb-4 md:mb-0 flex flex-col justify-between">
       <label className="block text-left text-sm font-semibold mb-1">Title</label>
@@ -264,7 +266,7 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
         <label className="block text-left text-sm font-semibold mb-1">Quote</label>
         <textarea
           minLength={200}
-          maxLength={310}
+          maxLength={450}
           value={input4}
           onChange={(e) => setInput4(e.target.value)}
           placeholder="Enter a quote"
@@ -276,6 +278,7 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
             overflowY: 'auto',
           }}
         />
+        {/* Comment out or remove the generate quote button
         <button
           onClick={generateRandomQuote}
           disabled={isGeneratingQuote}
@@ -293,6 +296,7 @@ const InputFields: React.FC<InputFieldsProps> = React.memo(({
             </svg>
           )}
         </button>
+        */}
       </div>
       {/* Buttons */}
       <div className="flex items-center w-auto justify-around">
