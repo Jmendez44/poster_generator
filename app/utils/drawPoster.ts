@@ -23,26 +23,6 @@ interface DrawPosterParams {
   quality?: 'low' | 'high';
 }
 
-interface DrawPosterParams {
-  palette: number[][];
-  isExport: boolean;
-  canvasRef: React.RefObject<HTMLCanvasElement>;
-  uploadedImageRef: React.RefObject<HTMLImageElement>;
-  previewSrc: string;
-  setPreviewSrc: React.Dispatch<React.SetStateAction<string>>;
-  setDownloadReady: React.Dispatch<React.SetStateAction<boolean>>;
-  inputs: {
-    title: string;
-    year: string;
-    input2: string;
-    input3: string;
-    input4: string;
-    logos: string[];
-  };
-  imageUploaded: boolean;
-  quality?: 'low' | 'high';
-}
-
 async function drawPoster(params: DrawPosterParams) {
   const {
     palette,
